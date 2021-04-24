@@ -1,26 +1,7 @@
 from simulation.geometry import Point, Rectangle
 import math
 
-
-class Habituation():
-    def __init__(self, frames: int):
-        self.__is_habituated = False
-        self.__frames_since_change = 0
-        self.__frames_to_habituate = frames
-
-    def reset(self):
-        self.__is_habituated = False
-        self.__frames_since_change = 0
-
-    def increase(self):
-        self.__frames_since_change = self.__frames_since_change + 1
-        if self.__frames_since_change > self.__frames_to_habituate:
-            self.__is_habituated = True
-
-    def is_habituated(self):
-        return self.__is_habituated
-
-
+    
 class Agent():
     def __init__(
             self,
