@@ -74,19 +74,9 @@ class Arena():
         img = Image.fromarray(coloured_pattern, mode="RGBA")
         return img
 
-    def is_position_on_fire(self, position: Point):
-        # position range from -width/2 to +width/2, -height/2 to +height/2
-        # numpy range from 0 to width and from 0 to height
-        transformed_position = position + \
-            Point(self.__width / 2, self.__height / 2)
-        index_x = min(int(transformed_position.x()), self.__width - 1)
-        index_y = min(int(transformed_position.y()), self.__height - 1)
-
-        return self.__pattern[index_x, index_y]
-
     def update(self):
         for agent in self.__agent_list:
-            agent.update(self.is_position_on_fire(agent.position()))
+            agent.update(self.__pattern)
 
     def plot(self):
         self.__ax.cla()

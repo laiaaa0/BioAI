@@ -10,7 +10,7 @@ class Firefighter(agent.Agent):
             pos: Point,
             encoding: str):
         speed = 5
-        super().__init__(arena, speed, theta, pos, encoding)
+        super().__init__(arena, speed, theta, pos, False, encoding)
 
     def color(self):
         return [1, 0, 0]

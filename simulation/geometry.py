@@ -20,6 +20,9 @@ class Point():
     def __str__(self):
         return f"({self.__x},{self.__y})"
 
+    def __copy__(self):
+        return Point(self.__x, self.__y)
+
     def __repr__(self):
         return f"({self.__x},{self.__y})"
 
@@ -39,6 +42,12 @@ class Rectangle():
     def contains(self, point: Point):
         return self.__top_left.x() <= point.x() <= self.__top_left.x() + \
             self.__width and self.__top_left.y() <= point.y() <= self.__top_left.y() + self.__height
+
+    def width(self):
+        return self.__width
+
+    def height(self):
+        return self.__height
 
     def rebound(self, pose: Point, current_theta: float):
         new_theta = current_theta

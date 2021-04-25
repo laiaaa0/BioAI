@@ -11,7 +11,7 @@ class Drone(agent.Agent):
             encoding: str):
 
         speed = 45
-        super().__init__(arena, speed, theta, pos, encoding)
+        super().__init__(arena, speed, theta, pos, True, encoding)
 
     def color(self):
         return [0, 1, 0]

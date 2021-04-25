@@ -11,7 +11,7 @@ class FireTruck(agent.Agent):
             encoding: str):
 
         speed = 100
-        super().__init__(arena, speed, theta, pos, encoding)
+        super().__init__(arena, speed, theta, pos, False, encoding)
 
     def color(self):
         return [0, 0, 1]
