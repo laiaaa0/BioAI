@@ -1,19 +1,21 @@
 from simulation.geometry import Point, Rectangle
 import math
 
-    
+
 class Agent():
     def __init__(
             self,
             arena: Rectangle,
             speed: float,
             theta: float,
-            pos: Point):
+            pos: Point,
+            encoding: str):
         self.__base_speed = speed
         self.__current_speed = speed
         self.__current_position = pos
         self.__direction_theta = theta
         self.__arena_rect = arena
+        self.__encoding = encoding
 
     def position(self):
         return self.__current_position
@@ -21,6 +23,9 @@ class Agent():
     def rebound(self):
         self.__direction_theta = self.__arena_rect.rebound(
             self.__current_position, self.__direction_theta)
+
+    def color(self):
+        return [0, 0, 0]
 
     def update(self, on_fire: bool):
         self.__current_position.update(

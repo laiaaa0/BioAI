@@ -1,4 +1,5 @@
-from simulation.agent import Agent
+from simulation.firefighter import Firefighter
+from simulation.drone import Drone
 from simulation.geometry import Rectangle, Point
 import math
 import random
@@ -6,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 import enum
-
 
 
 class Arena():
@@ -25,20 +25,37 @@ class Arena():
 
         self.__pattern = np.zeros(
             (self.__width, self.__height), dtype=np.uint8)
-        self.__pattern[int(self.__width /3):int(2 *self.__width /3), int(self.__height /3):int(2 *self.__height /3)] = 1
-        
+        self.__pattern[int(self.__width /
+                           3):int(2 *
+                                  self.__width /
+                                  3), int(self.__height /
+                                          3):int(2 *
+                                                 self.__height /
+                                                 3)] = 1
 
     def initialise_agents(self, num_agents: int, seed=42):
         random.seed(seed)
-        for _ in range(num_agents):
-            self.__agent_list.append(
-                Agent(
-                    self.__rectangle,
-                    speed=10 * random.random(),
-                    theta=random.uniform(
-                        0,
-                        2 * math.pi),
-                    pos=self.__rectangle.random_point(seed)))
+        for i in range(num_agents):
+            if i % 2 == 0:
+                self.__agent_list.append(
+                    Firefighter(
+                        self.__rectangle,
+                        speed=10 * random.random(),
+                        theta=random.uniform(
+                            0,
+                            2 * math.pi),
+                        pos=self.__rectangle.random_point(seed),
+                        encoding=""))
+            else:
+                self.__agent_list.append(
+                    Drone(
+                        self.__rectangle,
+                        speed=10 * random.random(),
+                        theta=random.uniform(
+                            0,
+                            2 * math.pi),
+                        pos=self.__rectangle.random_point(seed),
+                        encoding=""))
 
     def image_from_pattern(self):
         coloured_pattern = np.ones(
@@ -66,7 +83,8 @@ class Arena():
         self.__ax.cla()
         x = [a.position().x() for a in self.__agent_list]
         y = [a.position().y() for a in self.__agent_list]
-        self.__ax.plot(x, y, 'bo')
+        colors = [a.color() for a in self.__agent_list]
+        self.__ax.scatter(x, y, c=colors)
         self.__ax.axis([-self.__width / 2, self.__width /
                         2, -self.__height / 2, self.__height / 2])
         self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))
