@@ -12,8 +12,8 @@ import enum
 
 class Arena():
     def __init__(self, num_agents=5):
-        self.__width = 1000
-        self.__height = 1000
+        self.__width = 1000  # m (1 km)
+        self.__height = 1000  # m (1 km) - each pixel is 1 m2
         self.__rectangle = Rectangle(-self.__width / 2, -
                                      self.__height / 2, self.__width, self.__height)
         self.__agent_list = []
@@ -86,6 +86,7 @@ class Arena():
         y = [a.position().y() for a in self.__agent_list]
         colors = [a.color() for a in self.__agent_list]
         self.__ax.scatter(x, y, c=colors)
+        self.__ax.plot(400, 400, 'kx')  # water tank location
         self.__ax.axis([-self.__width / 2, self.__width /
                         2, -self.__height / 2, self.__height / 2])
         self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))

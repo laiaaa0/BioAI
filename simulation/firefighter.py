@@ -9,7 +9,8 @@ class Firefighter(agent.Agent):
             theta: float,
             pos: Point,
             encoding: str):
-        speed = 5
+        speed = 5  # km/h
+        speed = speed * 3600 / 1000  # m/s
         super().__init__(arena, speed, theta, pos, False, encoding)
 
     def color(self):

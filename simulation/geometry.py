@@ -32,6 +32,12 @@ class Point():
     def __add__(self, other):
         return Point(self.__x + other.x(), self.__y + other.y())
 
+    def __sub__(self, other):
+        return Point(self.__x - other.x(), self.__y - other.y())
+
+    def norm(self):
+        return math.sqrt(self.__x**2 + self.__y**2)
+
 
 class Rectangle():
     def __init__(self, x, y, w, h):

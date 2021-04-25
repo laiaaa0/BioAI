@@ -12,10 +12,10 @@ class Agent():
             pos: Point,
             can_be_on_fire: bool,
             encoding: str):
-        self.__base_speed = speed
-        self.__current_speed = speed
+        self._base_speed = speed
+        self._current_speed = speed
         self.__current_position = pos
-        self.__direction_theta = theta
+        self._direction_theta = theta
         self.__arena_rect = arena
         self.__can_be_on_fire = can_be_on_fire
         self.__encoding = encoding
@@ -24,37 +24,43 @@ class Agent():
         return self.__current_position
 
     def rebound(self):
-        self.__direction_theta = self.__arena_rect.rebound(
-            self.__current_position, self.__direction_theta)
+        self._direction_theta = self.__arena_rect.rebound(
+            self.__current_position, self._direction_theta)
 
     def color(self):
         return [0, 0, 0]
 
-    def is_position_on_fire(self, pattern, pos):
+    def index_in_grid(self, pos: Point):
         # position range from -width/2 to +width/2, -height/2 to +height/2
         # numpy range from 0 to width and from 0 to height
+        width = self.__arena_rect.width()
+        height = self.__arena_rect.height()
         transformed_position = pos + \
-            Point(self.__arena_rect.width() / 2, self.__arena_rect.height() / 2)
-        index_x = min(int(transformed_position.x()),
-                      self.__arena_rect.width() - 1)
-        index_y = min(int(transformed_position.y()),
-                      self.__arena_rect.height() - 1)
+            Point(width / 2, height / 2)
+        x = max(0, min(int(transformed_position.x()),
+                       width - 1))
+        y = max(0, min(int(transformed_position.y()),
+                       height - 1))
+        return (x, y)
+
+    def is_position_on_fire(self, pattern, pos):
+        (index_x, index_y) = self.index_in_grid(pos)
         return pattern[index_x, index_y]
 
     def update(self, fire_pattern):
         new_pos = copy.copy(self.__current_position)
         new_pos.update(
-            self.__current_speed, self.__direction_theta)
+            self._current_speed, self._direction_theta)
 
         if self.__can_be_on_fire or not self.is_position_on_fire(
                 fire_pattern, new_pos):
             self.__current_position = new_pos
 
         else:
-            if self.__current_speed > 10:
-                self.__current_speed = self.__current_speed / 2
+            if self._current_speed > 10:
+                self._current_speed = self._current_speed / 2
             else:
-                self.__current_speed = 0  # stop at the fire boundary
+                self._current_speed = 0  # stop at the fire boundary
 
         if not self.__arena_rect.contains(self.__current_position):
             self.rebound()

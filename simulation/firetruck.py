@@ -10,7 +10,8 @@ class FireTruck(agent.Agent):
             pos: Point,
             encoding: str):
 
-        speed = 100
+        speed = 100  # km/h
+        speed = speed * 3600 / 1000
         super().__init__(arena, speed, theta, pos, False, encoding)
 
     def color(self):
