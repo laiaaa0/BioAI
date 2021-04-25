@@ -6,10 +6,11 @@ class Drone(agent.Agent):
     def __init__(
             self,
             arena: Rectangle,
-            speed: float,
             theta: float,
             pos: Point,
             encoding: str):
+
+        speed = 45
         super().__init__(arena, speed, theta, pos, encoding)
 
     def color(self):

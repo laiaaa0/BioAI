@@ -1,5 +1,6 @@
 from simulation.firefighter import Firefighter
 from simulation.drone import Drone
+from simulation.firetruck import FireTruck
 from simulation.geometry import Rectangle, Point
 import math
 import random
@@ -11,8 +12,8 @@ import enum
 
 class Arena():
     def __init__(self, num_agents=5):
-        self.__width = 100
-        self.__height = 100
+        self.__width = 1000
+        self.__height = 1000
         self.__rectangle = Rectangle(-self.__width / 2, -
                                      self.__height / 2, self.__width, self.__height)
         self.__agent_list = []
@@ -36,21 +37,29 @@ class Arena():
     def initialise_agents(self, num_agents: int, seed=42):
         random.seed(seed)
         for i in range(num_agents):
-            if i % 2 == 0:
+            if i % 3 == 0:
                 self.__agent_list.append(
                     Firefighter(
                         self.__rectangle,
-                        speed=10 * random.random(),
+                        theta=random.uniform(
+                            0,
+                            2 * math.pi),
+                        pos=self.__rectangle.random_point(seed),
+                        encoding=""))
+            elif i % 3 == 1:
+                self.__agent_list.append(
+                    Drone(
+                        self.__rectangle,
                         theta=random.uniform(
                             0,
                             2 * math.pi),
                         pos=self.__rectangle.random_point(seed),
                         encoding=""))
             else:
+
                 self.__agent_list.append(
-                    Drone(
+                    FireTruck(
                         self.__rectangle,
-                        speed=10 * random.random(),
                         theta=random.uniform(
                             0,
                             2 * math.pi),

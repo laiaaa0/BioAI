@@ -2,15 +2,16 @@ from simulation import agent
 from simulation.geometry import Point, Rectangle
 
 
-class Firefighter(agent.Agent):
+class FireTruck(agent.Agent):
     def __init__(
             self,
             arena: Rectangle,
             theta: float,
             pos: Point,
             encoding: str):
-        speed = 5
+
+        speed = 100
         super().__init__(arena, speed, theta, pos, encoding)
 
     def color(self):
-        return [1, 0, 0]
+        return [0, 0, 1]
