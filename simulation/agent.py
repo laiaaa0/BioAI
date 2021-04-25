@@ -33,13 +33,12 @@ class Agent():
     def is_position_on_fire(self, pattern, pos):
         # position range from -width/2 to +width/2, -height/2 to +height/2
         # numpy range from 0 to width and from 0 to height
-        transformed_position = self.__current_position + \
+        transformed_position = pos + \
             Point(self.__arena_rect.width() / 2, self.__arena_rect.height() / 2)
         index_x = min(int(transformed_position.x()),
                       self.__arena_rect.width() - 1)
         index_y = min(int(transformed_position.y()),
                       self.__arena_rect.height() - 1)
-
         return pattern[index_x, index_y]
 
     def update(self, fire_pattern):
@@ -50,8 +49,12 @@ class Agent():
         if self.__can_be_on_fire or not self.is_position_on_fire(
                 fire_pattern, new_pos):
             self.__current_position = new_pos
+
         else:
-            self.__current_speed = 0  # stop at the fire boundary
+            if self.__current_speed > 10:
+                self.__current_speed = self.__current_speed / 2
+            else:
+                self.__current_speed = 0  # stop at the fire boundary
 
         if not self.__arena_rect.contains(self.__current_position):
             self.rebound()

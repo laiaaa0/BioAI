@@ -37,7 +37,8 @@ class Arena():
     def initialise_agents(self, num_agents: int, seed=42):
         random.seed(seed)
         for i in range(num_agents):
-            if i % 3 == 0:
+            if i % 3 == 2:
+
                 self.__agent_list.append(
                     Firefighter(
                         self.__rectangle,
@@ -55,6 +56,7 @@ class Arena():
                             2 * math.pi),
                         pos=self.__rectangle.random_point(seed),
                         encoding=""))
+
             else:
 
                 self.__agent_list.append(
