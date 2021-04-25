@@ -1,7 +1,13 @@
 from simulation.geometry import Point, Rectangle
 import math
 import copy
+import enum
 
+
+class State(enum.Enum):
+    GOING_TO_REFILL = 1
+    GOING_TO_FIRE = 2
+    ON_FIRE = 3
 
 class Agent():
     def __init__(
@@ -11,6 +17,7 @@ class Agent():
             theta: float,
             pos: Point,
             can_be_on_fire: bool,
+            max_capacity : int,
             encoding: str):
         self._base_speed = speed
         self._current_speed = speed
@@ -19,6 +26,11 @@ class Agent():
         self.__arena_rect = arena
         self.__can_be_on_fire = can_be_on_fire
         self.__encoding = encoding
+        self._max_capacity = max_capacity
+        self.__water_tank_location = Point(400, 400)
+        self._drop_rate = 17# Liters/m^2 (https://bedtimemath.org/fun-math-firefighting/)
+        
+
 
     def position(self):
         return self.__current_position
@@ -42,6 +54,16 @@ class Agent():
         y = max(0, min(int(transformed_position.y()),
                        height - 1))
         return (x, y)
+
+    def go_to_refill(self):
+        direction = self.__water_tank_location - self.position()
+        if direction.norm() < 5:  # refill
+            self._current_liters = self._max_capacity
+        else:
+            self._direction_theta = math.atan2(
+                direction.y(), direction.x())
+            self._current_speed = min(self._base_speed, direction.norm())
+
 
     def is_position_on_fire(self, pattern, pos):
         (index_x, index_y) = self.index_in_grid(pos)

@@ -11,7 +11,7 @@ class Firefighter(agent.Agent):
             encoding: str):
         speed = 5  # km/h
         speed = speed * 3600 / 1000  # m/s
-        super().__init__(arena, speed, theta, pos, False, encoding)
+        super().__init__(arena, speed, theta, pos, False, 0,encoding)
 
     def color(self):
         return [1, 0, 0]
