@@ -56,7 +56,7 @@ class Arena():
                             0,
                             2 * math.pi),
                         pos=self.__rectangle.random_point(seed),
-                        encoding=5))
+                        encoding=2))
 
             else:
 
