@@ -13,7 +13,7 @@ class Drone(agent.Agent):
             arena: Rectangle,
             theta: float,
             pos: Point,
-            encoding: str):
+            encoding: int):
 
         speed = 45  # km/h
         speed = speed * 3600 / 1000  # m/s
@@ -28,10 +28,26 @@ class Drone(agent.Agent):
 
     def should_drop_water(self, fire_pattern):
         # This is modified by the encoding
-        return super().is_position_on_fire(fire_pattern, super().position())
+        if self.count_positions_on_fire(fire_pattern) > int(self._encoding):
+            return True 
+        else:
+            return False
 
+    def count_positions_on_fire(self,fire_pattern):
+        (index_x, index_y) = super().index_in_grid(super().position())
+        x_start = max(0, index_x-1)
+        x_end = min(fire_pattern.shape[0]-1, index_x+1)
+        y_start = max(0, index_y-1)
+        y_end = min(fire_pattern.shape[0]-1, index_y+1)
+        
+        positions_on_fire = np.sum(fire_pattern[x_start:x_end,y_start:y_end])
+        return positions_on_fire
+        
+
+    def agent_type(self):
+        return agent.Type.DRONE
+    
     def update_direction(self, fire_pattern):
-        # This is modified by encoding
         (index_x, index_y) = super().index_in_grid(super().position())
         # Assume that the temperature sensor would detect high temperature up
         # to 10 meters away in any direction

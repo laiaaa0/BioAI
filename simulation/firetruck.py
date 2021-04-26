@@ -10,7 +10,7 @@ class FireTruck(agent.Agent):
             arena: Rectangle,
             theta: float,
             pos: Point,
-            encoding: str):
+            encoding: int):
 
         speed = 100  # km/h
         speed = speed * 3600 / 1000
@@ -52,3 +52,6 @@ class FireTruck(agent.Agent):
         else: 
             super().go_to_refill()
 
+
+    def agent_type(self):
+        return agent.Type.TRUCK

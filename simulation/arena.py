@@ -26,6 +26,7 @@ class Arena():
 
         self.__pattern = np.zeros(
             (self.__width, self.__height), dtype=np.uint8)
+        
         self.__pattern[int(self.__width /
                            3):int(2 *
                                   self.__width /
@@ -46,7 +47,7 @@ class Arena():
                             0,
                             2 * math.pi),
                         pos=self.__rectangle.random_point(seed),
-                        encoding=""))
+                        encoding=0))
             elif i % 3 == 1:
                 self.__agent_list.append(
                     Drone(
@@ -55,7 +56,7 @@ class Arena():
                             0,
                             2 * math.pi),
                         pos=self.__rectangle.random_point(seed),
-                        encoding=""))
+                        encoding=5))
 
             else:
 
@@ -66,7 +67,7 @@ class Arena():
                             0,
                             2 * math.pi),
                         pos=self.__rectangle.random_point(seed),
-                        encoding=""))
+                        encoding=0))
 
     def image_from_pattern(self):
         coloured_pattern = np.ones(
