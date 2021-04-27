@@ -46,8 +46,8 @@ class Rectangle():
         self.__height = h
 
     def contains(self, point: Point):
-        return self.__top_left.x() <= point.x() <= self.__top_left.x() + \
-            self.__width and self.__top_left.y() <= point.y() <= self.__top_left.y() + self.__height
+        return self.__top_left.x() <= point.x() < self.__top_left.x() + \
+            self.__width and self.__top_left.y() <= point.y() < self.__top_left.y() + self.__height
 
     def width(self):
         return self.__width
@@ -76,3 +76,7 @@ class Rectangle():
             self.__top_left.y() +
             self.__height)
         return Point(x, y)
+
+    def random_point_int(self,seed):
+        p = self.random_point(seed)
+        return Point(int(p.x()),int(p.y()))

@@ -27,9 +27,9 @@ class Agent():
             encoding: int):
         self._base_speed = speed
         self._current_speed = speed
-        self.__current_position = pos
+        self._current_position = pos
         self._direction_theta = theta
-        self.__arena_rect = arena
+        self._arena_rect = arena
         self.__can_be_on_fire = can_be_on_fire
         self._encoding = encoding
         self._max_capacity = max_capacity
@@ -39,11 +39,11 @@ class Agent():
 
 
     def position(self):
-        return self.__current_position
+        return self._current_position
 
     def rebound(self):
-        self._direction_theta = self.__arena_rect.rebound(
-            self.__current_position, self._direction_theta)
+        self._direction_theta = self._arena_rect.rebound(
+            self._current_position, self._direction_theta)
 
     def agent_type(self):
         return Type.AGENT
@@ -53,8 +53,8 @@ class Agent():
     def index_in_grid(self, pos: Point):
         # position range from -width/2 to +width/2, -height/2 to +height/2
         # numpy range from 0 to width and from 0 to height
-        width = self.__arena_rect.width()
-        height = self.__arena_rect.height()
+        width = self._arena_rect.width()
+        height = self._arena_rect.height()
         transformed_position = pos + \
             Point(width / 2, height / 2)
         x = max(0, min(int(transformed_position.x()),
@@ -78,13 +78,13 @@ class Agent():
         return pattern[index_x, index_y]
 
     def update(self, fire_pattern):
-        new_pos = copy.copy(self.__current_position)
+        new_pos = copy.copy(self._current_position)
         new_pos.update(
             self._current_speed, self._direction_theta)
 
         if self.__can_be_on_fire or not self.is_position_on_fire(
                 fire_pattern, new_pos):
-            self.__current_position = new_pos
+            self._current_position = new_pos
 
         else:
             if self._current_speed > 10:
@@ -92,5 +92,5 @@ class Agent():
             else:
                 self._current_speed = 0  # stop at the fire boundary
 
-        if not self.__arena_rect.contains(self.__current_position):
+        if not self._arena_rect.contains(self._current_position):
             self.rebound()
