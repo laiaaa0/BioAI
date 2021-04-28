@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 import enum
+import itertools
 
 # Globals
 CELL_BURN_RATE = 10
@@ -33,30 +34,9 @@ class Cell():
         self.__num_agents = 0   # Number of agents in cell.
         self.__fuel = 100   # %
     
-    '''
-    # fire_grid is the numpy array containing the Cells.
-    def update(self, fire_grid):
-        if self.burn():     # Burning reduces remaining fuel.
-            # If cell burnt out, remove from list.
-            # TODO Improvement: don't like modifying this from inside this function.
-            # This should perhaps be passed back and taken care of by the calling code.
-            fire_grid.__on_fire.remove(self.__coords)
-
-
-        if self.__state == CellState.ON_FIRE:
-            for neighbour in get_neighbours():
-                if fire_grid[neighbour].get_state() == CellState.BURNABLE:
-                    # TODO Improvement: don't like modifying these from inside this function.
-                    # These should perhaps be passed back and taken care of by the calling code.
-                    neighbour.set_state(CellState.ON_FIRE)
-                    fire_grid.__on_fire.append(neighbour)
-    '''
-    
     # fire_grid is the 2D list containing the Cells.
     # world_dims = (width, height)
     def update(self, fire_list_current, fire_list_next, fire_grid, world_dims):
-        print(self.__coords)
-
         if not self.burn():     # Burning reduces remaining fuel.
             # If cell burnt out, remove from list.
             # TODO Improvement: don't like modifying this from inside this function.
@@ -65,14 +45,11 @@ class Cell():
         
         # We already know that the cell is on fire.
         for neighbour_coord in self.get_neighbours(world_dims):
-            #print("Neighbour coord: {}".format(neighbour_coord))
             neighbour = fire_grid[neighbour_coord[0]][neighbour_coord[1]]
             if neighbour.get_state() == CellState.BURNABLE:
                 # TODO Improvement: don't like modifying these from inside this function.
                 # These should perhaps be passed back and taken care of by the calling code.
-                # Temp
-                #neighbour.set_state(CellState.ON_FIRE)
-                neighbour.__state = CellState.ON_FIRE
+                neighbour.set_state(CellState.ON_FIRE)
                 fire_list_next.append(neighbour_coord)
     
     def get_neighbours(self, world_dims):
@@ -81,7 +58,6 @@ class Cell():
         # Manhattan distance of 1.
         for (i,j) in [(-1,0), (1,0), (0,-1), (0,1)]:
             (neighbour_x, neighbour_y) = (self.__coords[0] + i, self.__coords[1] + j)
-            #print("(x,y) = ({},{})".format(neighbour_x, neighbour_y))
             if (0 <= neighbour_x < world_dims[0]) and (0 <= neighbour_y < world_dims[1]):
                 neighbours.append((neighbour_x, neighbour_y))
         
@@ -105,6 +81,9 @@ class Cell():
     
     def get_coords(self):
         return self.__coords
+    
+    def get_remaining_fuel(self):
+        return self.__fuel
 
 class Arena():
     # init_fire is an array of 2-tuples specifying the initial cells which are on fire: [(x1,y1), (x2,y2)].
@@ -154,10 +133,9 @@ class Arena():
                                                  '''
     
     def initialise_fire(self, init_fire_cells):
-        for cell_coords in init_fire_cells:
-            #self.__fire_grid[cell_coords].set_state = CellState.ON_FIRE    # numpy addressing
-            self.__fire_grid[cell_coords[0]][cell_coords[1]].set_state = CellState.ON_FIRE
-            self.__on_fire.append(cell_coords)
+        for x, y in init_fire_cells:
+            self.__fire_grid[x][y].set_state(CellState.ON_FIRE)
+            self.__on_fire.append((x, y))
 
     def initialise_agents(self, num_agents: int, seed=42):
         random.seed(seed)
@@ -170,19 +148,38 @@ class Arena():
                             2 * math.pi),
                         pos=self.__rectangle.random_point_int(seed),
                         encoding=0))
+    
+    def add_trench(self, trench_coords):
+        for x, y in trench_coords:
+            self.__fire_grid[x][y].set_state(CellState.TRENCH)
+
+    def extinguish(self, extinguish_coords):
+        for x, y in extinguish_coords:
+            if self.__fire_grid[x][y].get_state() == CellState.ON_FIRE:
+                self.__fire_grid[x][y].set_state(CellState.BURNABLE)
 
     def image_from_pattern(self):
         coloured_pattern = np.ones(
             (self.__width, self.__height, 4), dtype=np.uint8) * 255
         
-        # Red
-
-        # Green
-
-        # Blue
-
-        #coloured_pattern[:, :, 2] = 0
-        #coloured_pattern[:, :, 3] = (self.__pattern==1) * 255
+        for x, y in itertools.product(range(self.__width), range(self.__height)):
+            fire_cell = self.__fire_grid[x][y]
+            if fire_cell.get_state() == CellState.ON_FIRE:
+                # yellow
+                coloured_pattern[x, y, 2] = 0
+            elif fire_cell.get_state() == CellState.BURNT_OUT:
+                # black
+                coloured_pattern[x, y, 0] = 50
+                coloured_pattern[x, y, 1] = 50
+                coloured_pattern[x, y, 2] = 50
+            elif fire_cell.get_state() == CellState.BURNABLE:
+                # colour green proportional to amount of fuel remaining
+                coloured_pattern[x, y, 0] = 0
+                coloured_pattern[x, y, 1] = 255 * fire_cell.get_remaining_fuel() / 100
+                coloured_pattern[x, y, 2] = 0
+            elif fire_cell.get_state() == CellState.TRENCH:
+                # lilac
+                coloured_pattern[x, y, 1] = 0
 
         img = Image.fromarray(coloured_pattern, mode="RGBA")
         return img
@@ -195,8 +192,8 @@ class Arena():
         # Gets populated during the iteration
         on_fire_next_itr = []
 
-        for cell in self.__on_fire:
-            self.__fire_grid[cell[0]][cell[1]].update(self.__on_fire, on_fire_next_itr, self.__fire_grid, (self.__width, self.__height))
+        for x, y in self.__on_fire:
+            self.__fire_grid[x][y].update(self.__on_fire, on_fire_next_itr, self.__fire_grid, (self.__width, self.__height))
         
         self.__on_fire = on_fire_next_itr
 
@@ -208,7 +205,7 @@ class Arena():
         self.__ax.scatter(x, y, c=colors)
         self.__ax.axis([0, self.__width , 0, self.__height])
         self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))
-        plt.pause(0.05)
+        plt.pause(0.03)
 
 # Testing
 if __name__ == "__main__":
