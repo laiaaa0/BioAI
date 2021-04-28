@@ -3,6 +3,7 @@ from simulation.geometry import Point, Rectangle
 from simulation.cell import Cell, CellState
 import enum 
 import numpy as np
+import random
 
 class Action(enum.Enum):
     EXTINGUISH=1
@@ -89,8 +90,13 @@ class Firefighter(agent.Agent):
                 (action,direction) = net.activate(inputs)
                 self.do_action(direction,action,fire_grid)
             else:
-                self.do_action(Direction.WEST, Action.MOVE, fire_grid)
+                random_dir = Direction(random.randint(1,5))
+                random_act = Action(random.randint(1,5))
+                #self.do_action(random_dir,random_act, fire_grid)
+                self.do_action(Direction.NORTH,Action.MOVE,fire_grid)
         if fire_grid[self._current_position.x()][self._current_position.y()].get_state() == CellState.ON_FIRE:
-            self.alive=False
+            if self.alive:
+                self.alive=False
+                fire_grid[self._current_position.x()][self._current_position.y()].remove_one_agent()
 
 

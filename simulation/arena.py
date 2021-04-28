@@ -132,7 +132,22 @@ class Arena():
         self.__on_fire = on_fire_next_itr
 
     def get_fitness_function(self):
-        return random.randint(0,100)
+        num_fighters_alive = 0
+        squares_on_fire = 0
+        burnt_squares=0
+        for agent in self.__agent_list:
+            if agent.alive:
+                num_fighters_alive = num_fighters_alive+1
+        
+        for row in self.__fire_grid:
+            for c in row:
+                if c.get_state()==CellState.BURNT_OUT:
+                    burnt_squares=burnt_squares+1
+                elif c.get_state()==CellState.ON_FIRE:
+                    squares_on_fire=squares_on_fire+1
+
+
+        return num_fighters_alive-squares_on_fire-burnt_squares
 
     
     def plot(self):
