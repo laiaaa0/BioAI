@@ -146,7 +146,6 @@ class Arena():
                 elif c.get_state()==CellState.ON_FIRE:
                     squares_on_fire=squares_on_fire+1
 
-
         return num_fighters_alive-squares_on_fire-burnt_squares
 
     
@@ -156,7 +155,7 @@ class Arena():
         y = [a.position().y() for a in self.__agent_list]
         x = [a.position().x() for a in self.__agent_list]
         colors = [a.color() for a in self.__agent_list]
-        self.__ax.scatter(x, y, c=colors)
+        self.__ax.scatter(y, x, c=colors)
         self.__ax.axis([0, self.__width , 0, self.__height])
         self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))
         plt.pause(0.03)

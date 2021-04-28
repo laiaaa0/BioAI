@@ -13,10 +13,10 @@ class Action(enum.Enum):
     NONE=5
 
 class Direction(enum.Enum):
-    NORTH = 1
-    SOUTH = 2
-    EAST = 3
-    WEST = 4
+    EAST = 1
+    WEST = 2
+    NORTH = 3
+    SOUTH = 4
     NONE = 5
     
     def __new__(cls, value):
