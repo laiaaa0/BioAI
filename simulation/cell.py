@@ -74,3 +74,9 @@ class Cell():
     
     def get_remaining_fuel(self):
         return self.__fuel
+    
+    def add_one_agent(self):
+        self.__num_agents = self.__num_agents+1
+    
+    def remove_one_agent(self):
+        self.__num_agents = self.__num_agents-1

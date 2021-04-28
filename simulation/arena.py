@@ -23,7 +23,6 @@ class Arena():
         self.__on_fire = []
         self.__agent_list = []
 
-        self.initialise_agents(num_agents)
         self.__fig = plt.figure()
         self.__ax = self.__fig.add_subplot(111, aspect='equal')
         self.__ax.set_autoscale_on(False)
@@ -35,6 +34,7 @@ class Arena():
 
         # 'Start' fire at given coordinates
         self.initialise_fire(init_fire_cells)
+        self.initialise_agents(num_agents)
 
         # Testing
         '''
@@ -66,14 +66,16 @@ class Arena():
     def initialise_agents(self, num_agents: int, seed=42):
         random.seed(seed)
         for i in range(num_agents):
+                position=self.__rectangle.random_point_int(seed)
                 self.__agent_list.append(
                     Firefighter(
                         self.__rectangle,
                         theta=random.uniform(
                             0,
                             2 * math.pi),
-                        pos=self.__rectangle.random_point_int(seed),
+                        pos=position,
                         encoding=0))
+                self.__fire_grid[position.x()][position.y()].add_one_agent()
     
     def add_trench(self, trench_coords):
         for x, y in trench_coords:
@@ -124,8 +126,9 @@ class Arena():
 
     def plot(self):
         self.__ax.cla()
-        x = [a.position().x() for a in self.__agent_list]
-        y = [a.position().y() for a in self.__agent_list]
+        # flip x and y so that they are consistent with the representation
+        x = [a.position().y() for a in self.__agent_list]
+        y = [self.__width-a.position().x() for a in self.__agent_list]
         colors = [a.color() for a in self.__agent_list]
         self.__ax.scatter(x, y, c=colors)
         self.__ax.axis([0, self.__width , 0, self.__height])
