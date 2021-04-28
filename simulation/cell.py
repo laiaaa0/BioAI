@@ -1,7 +1,9 @@
-
 import enum
+import random
+
 # Globals
 CELL_BURN_RATE = 10
+FIRE_TRANSMISSION_PROBABILITY = 0.3
 
 # Colours:
 # ON_FIRE = yellow = (255, 255, 0)
@@ -37,10 +39,12 @@ class Cell():
         for neighbour_coord in self.get_neighbours(world_dims):
             neighbour = fire_grid[neighbour_coord[0]][neighbour_coord[1]]
             if neighbour.get_state() == CellState.BURNABLE:
-                # TODO Improvement: don't like modifying these from inside this function.
-                # These should perhaps be passed back and taken care of by the calling code.
-                neighbour.set_state(CellState.ON_FIRE)
-                fire_list_next.append(neighbour_coord)
+                # Stochasticity
+                if (random.random() >= (1 - FIRE_TRANSMISSION_PROBABILITY)):
+                    # TODO Improvement: don't like modifying these from inside this function.
+                    # These should perhaps be passed back and taken care of by the calling code.
+                    neighbour.set_state(CellState.ON_FIRE)
+                    fire_list_next.append(neighbour_coord)
     
     def get_neighbours(self, world_dims):
         neighbours = []

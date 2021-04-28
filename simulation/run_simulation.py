@@ -9,7 +9,7 @@ init_fire = [(0,0), (20,20), (50,50), (50,51)]
 a = Arena(init_fire, num_agents=50)
 # Set up trench
 a.add_trench(itertools.product([70], range(30, 70)))
-num_iterations = 60
+num_iterations = 100
 for i in range(num_iterations):
     a.plot()
     a.update()
