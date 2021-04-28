@@ -80,10 +80,14 @@ class Firefighter(agent.Agent):
 
         return inputs
 
-    def update(self, fire_grid):
+    def update(self, fire_grid, net):
         if self.alive:
-            # select action and direction from network
-            self.do_action(Direction.SOUTH, Action.MOVE, fire_grid)
+            if net:
+                inputs = get_network_input(fire_grid)
+                (action,direction) = net.activate(inputs)
+                self.do_action(direction,action,fire_grid)
+            else:
+                self.do_action(Direction.SOUTH, Action.MOVE, fire_grid)
         if fire_grid[self._current_position.x()][self._current_position.y()].get_state() == CellState.ON_FIRE:
             self.alive=False
 

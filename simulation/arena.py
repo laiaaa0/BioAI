@@ -14,7 +14,7 @@ import itertools
 
 class Arena():
     # init_fire is an array of 2-tuples specifying the initial cells which are on fire: [(x1,y1), (x2,y2)].
-    def __init__(self, init_fire_cells, num_agents=5):
+    def __init__(self, init_fire_cells, num_agents=5, network=None):
         self.__width = 100  # m (1 km)
         self.__height = 100  # m (1 km) - each pixel is 1 m2
         self.__rectangle = Rectangle(0,0, self.__width, self.__height)
@@ -27,6 +27,8 @@ class Arena():
         self.__ax = self.__fig.add_subplot(111, aspect='equal')
         self.__ax.set_autoscale_on(False)
         self.__ax.axis([0, self.__width, 0, self.__height])
+        # The evolved network
+        self.__net = network
 
         # Create grid - 2D array of Cell objects.
         # Coordinate system aligns with axes - bottom left is (0,0).
@@ -121,7 +123,7 @@ class Arena():
 
         # Gets populated during the iteration
         for agent in self.__agent_list:
-            agent.update(self.__fire_grid)
+            agent.update(self.__fire_grid, self.__net)
 
         on_fire_next_itr = []
         for x, y in self.__on_fire:
@@ -129,6 +131,10 @@ class Arena():
         
         self.__on_fire = on_fire_next_itr
 
+    def get_fitness_function(self):
+        return random.randint(0,100)
+
+    
     def plot(self):
         self.__ax.cla()
         # flip x and y so that they are consistent with the representation
