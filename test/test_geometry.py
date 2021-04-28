@@ -31,7 +31,7 @@ class TestPoint(unittest.TestCase):
 class TestRectangle(unittest.TestCase):
     def test_contains(self):
         rectangle = geo.Rectangle(0, 0, 10, 10)
-        values = [(random.randint(0, 10), random.randint(0, 10))
+        values = [(random.randint(0, 9), random.randint(0, 9))
                   for _ in range(10)]
         for (x, y) in values:
             self.assertTrue(rectangle.contains(geo.Point(x, y)))
