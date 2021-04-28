@@ -92,6 +92,11 @@ class Arena():
         
         for x, y in itertools.product(range(self.__width), range(self.__height)):
             fire_cell = self.__fire_grid[x][y]
+            # Flipping to match coordinate axes in output image
+            # TODO I don't fully understand the image coordinate system (doesn't seem
+            # to match up with normal x and y) - should this be self.__width or
+            # self.__height?
+            x = (self.__width - 1) - x
             if fire_cell.get_state() == CellState.ON_FIRE:
                 # yellow
                 coloured_pattern[x, y, 2] = 0
