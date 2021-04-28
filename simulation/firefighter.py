@@ -1,5 +1,6 @@
 from simulation import agent
 from simulation.geometry import Point, Rectangle
+from simulation.cell import Cell, CellState
 import enum 
 import numpy as np
 
@@ -78,11 +79,12 @@ class Firefighter(agent.Agent):
 
         return inputs
 
-    def update(self, pattern):
+    def update(self, fire_grid):
         if self.alive:
             # select action and direction from network
-            self.do_action(Direction.NORTH, Action.MOVE, pattern)
-        if pattern[self._current_position.x(),self._current_position.y()] == 1:
+            pass
+            #self.do_action(Direction.NORTH, Action.MOVE, pattern)
+        if fire_grid[self._current_position.x()][self._current_position.y()].get_state() == CellState.ON_FIRE:
             self.alive=False
 
 
