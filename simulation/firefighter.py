@@ -12,10 +12,10 @@ class Action(enum.Enum):
     NONE=5
 
 class Direction(enum.Enum):
-    EAST = 1
-    WEST = 2
-    SOUTH = 3
-    NORTH = 4
+    NORTH = 1
+    SOUTH = 2
+    EAST = 3
+    WEST = 4
     NONE = 5
     
     def __new__(cls, value):
@@ -74,8 +74,10 @@ class Firefighter(agent.Agent):
         inputs = []
         for [posx,posy] in positions:
             if self._arena_rect.contains(Point(posx,posy)):
-                inputs.append(pattern[posx][posy])
+                inputs.append(int(pattern[posx][posy].get_state()))
+                inputs.append(int(pattern[posx][posy].get_num_agents()))                
             else:
+                inputs.append(0)
                 inputs.append(0)
 
         return inputs
@@ -83,11 +85,11 @@ class Firefighter(agent.Agent):
     def update(self, fire_grid, net):
         if self.alive:
             if net:
-                inputs = get_network_input(fire_grid)
+                inputs = self.get_network_input(fire_grid)
                 (action,direction) = net.activate(inputs)
                 self.do_action(direction,action,fire_grid)
             else:
-                self.do_action(Direction.SOUTH, Action.MOVE, fire_grid)
+                self.do_action(Direction.WEST, Action.MOVE, fire_grid)
         if fire_grid[self._current_position.x()][self._current_position.y()].get_state() == CellState.ON_FIRE:
             self.alive=False
 

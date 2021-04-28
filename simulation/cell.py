@@ -84,3 +84,6 @@ class Cell():
     
     def remove_one_agent(self):
         self.__num_agents = self.__num_agents-1
+    
+    def get_num_agents(self):
+        return self.__num_agents

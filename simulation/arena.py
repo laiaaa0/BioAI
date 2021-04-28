@@ -138,8 +138,8 @@ class Arena():
     def plot(self):
         self.__ax.cla()
         # flip x and y so that they are consistent with the representation
-        x = [a.position().y() for a in self.__agent_list]
-        y = [self.__width-a.position().x() for a in self.__agent_list]
+        y = [a.position().y() for a in self.__agent_list]
+        x = [a.position().x() for a in self.__agent_list]
         colors = [a.color() for a in self.__agent_list]
         self.__ax.scatter(x, y, c=colors)
         self.__ax.axis([0, self.__width , 0, self.__height])
