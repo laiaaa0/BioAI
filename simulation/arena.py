@@ -66,3 +66,42 @@ class Arena():
         self.__ax.axis([0, self.__width , 0, self.__height])
         self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))
         plt.pause(0.05)
+    
+
+    # Temp - added by FT for fire_model code.
+    def remove_agents(self):
+        self.__agent_list = []
+    
+    # Temp - added by FT for fire_model code.
+    def get_dims(self):
+        return [self.__width, self.__height]
+    
+    # Temp - added by FT for fire_model code.
+    def clear_pattern(self):
+        self.__pattern = np.zeros(
+            (self.__width, self.__height), dtype=np.uint8)
+
+    # Temp - added by FT for fire_model code.
+    # coords is a list of coordinates to set to 1.
+    def set_pattern(self, coords):
+        for axis_coord in coords:
+            pattern_coord = self.axis_to_pattern(axis_coord)
+            self.__pattern[pattern_coord[0], pattern_coord[1]] = 1
+    
+    # Temp - added by FT for fire_model code.
+    def overwrite_pattern(self, pattern):
+        self.__pattern = pattern
+    
+    # Temp - added by FT for fire_model code.
+    # Translates axis coords into pattern coords.
+    def axis_to_pattern(self, axis_coord):
+        # TODO Need to change this 99 to be __width or __height (which one?)
+        return [99 - axis_coord[1], axis_coord[0]]
+    
+    # Temp - added by FT for fire_model code.
+    def get_pattern(self):
+        return self.__pattern
+
+    # Temp - added by FT for fire_model code.
+    def on_fire(self, pattern_coord):
+        return self.__pattern[pattern_coord[0], pattern_coord[1]]
