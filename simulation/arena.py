@@ -21,10 +21,7 @@ class Arena():
         # Keeps track of the cells on fire, so that it doesn't have to check all of the cells in the grid on every iteration.
         # List of cell coordinates.
         self.__on_fire = []
-        # Normalised numpy vector
-        # TODO Temp - coordinates are backwards in current coordinate system - have to swap elements.
-        wind_np = np.array([wind[1], wind[0]])
-        self.__wind = wind_np / np.linalg.norm(wind_np)
+        self.__wind = wind
 
         self.__agent_list = []
 
@@ -42,6 +39,10 @@ class Arena():
         # 'Start' fire at given coordinates
         self.initialise_fire(init_fire_cells)
         self.initialise_agents(num_agents)
+        
+        # Calculate effect of wind on spread of fire.
+        # Populates dictionary 'self.__wind_spread_modifiers_by_offset', used in Cell.update(...)
+        self.calculate_wind_spread_prob_modifiers()
 
         # For stochasticity
         random.seed()
@@ -73,6 +74,29 @@ class Arena():
         for x, y in extinguish_coords:
             if self.__fire_grid[x][y].get_state() == CellState.ON_FIRE:
                 self.__fire_grid[x][y].set_state(CellState.BURNABLE)
+    
+    # For calculating the effect of wind on the spread of the fire.
+    def calculate_wind_spread_prob_modifiers(self):
+        # Normalise wind and convert to numpy vector (array).
+        # TODO Temp - coordinates are backwards in current coordinate system - have to swap elements.
+        wind_np = np.array([self.__wind[1], self.__wind[0]])
+        # Normalise
+        wind_norm = np.linalg.norm(wind_np)
+        if not wind_norm == 0:
+            wind_np = wind_np / wind_norm
+
+        # Initialise dictionary
+        self.__wind_spread_modifiers_by_offset = {}
+
+        # Calculate probability modifiers for each offset (e.g. N, E, S, W) depending on wind direction.
+        # List 'neighbourhood' defined in simulation.cell.
+        for offset in neighbourhood:
+            # Alter transmission probability depending on direction of wind.
+            offset_np = np.array(offset)
+            # > 0 ==> wind in same direction; < 0 ==> wind in opposite direction.
+            wind_modifier = np.dot(offset_np, wind_np)
+            # Hyperbolic tangent has a range of -1 to 1.
+            self.__wind_spread_modifiers_by_offset[offset] = math.tanh(wind_modifier)
 
     def image_from_pattern(self):
         coloured_pattern = np.ones(
@@ -115,7 +139,7 @@ class Arena():
         # Update fire
         on_fire_next_itr = []
         for x, y in self.__on_fire:
-            self.__fire_grid[x][y].update(self.__on_fire, on_fire_next_itr, self.__fire_grid, (self.__width, self.__height), self.__wind)
+            self.__fire_grid[x][y].update(self.__on_fire, on_fire_next_itr, self.__fire_grid, (self.__width, self.__height), self.__wind_spread_modifiers_by_offset)
         self.__on_fire = on_fire_next_itr
 
     def get_fitness_function(self):
