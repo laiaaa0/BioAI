@@ -38,27 +38,8 @@ class Arena():
         self.initialise_fire(init_fire_cells)
         self.initialise_agents(num_agents)
 
-        # Testing
-        '''
-        print(self.__fire_grid[0][0].get_coords())
-        print(self.__fire_grid[99][0].get_coords())
-        print(self.__fire_grid[0][99].get_coords())
-        print(self.__fire_grid[99][99].get_coords())
-        '''
-
-        # From previous version
-        '''
-        self.__pattern = np.zeros(
-            (self.__width, self.__height), dtype=np.uint8)
-        
-        self.__pattern[int(self.__width /
-                           3):int(2 *
-                                  self.__width /
-                                  3), int(self.__height /
-                                          3):int(2 *
-                                                 self.__height /
-                                                 3)] = 1
-                                                 '''
+        # For stochasticity
+        random.seed()
     
     def initialise_fire(self, init_fire_cells):
         for x, y in init_fire_cells:
