@@ -14,7 +14,7 @@ import itertools
 
 class Arena():
     # init_fire is an array of 2-tuples specifying the initial cells which are on fire: [(x1,y1), (x2,y2)].
-    def __init__(self, init_fire_cells, num_agents=5, network=None, wind=(0,0)):
+    def __init__(self, init_fire_cells, num_agents=5, network=None, show_plot=False, wind=(0,0)):
         self.__width = 100  # m (1 km)
         self.__height = 100  # m (1 km) - each pixel is 1 m2
         self.__rectangle = Rectangle(0,0, self.__width, self.__height)
@@ -24,11 +24,13 @@ class Arena():
         self.__wind = wind
 
         self.__agent_list = []
+        self.__show_plot = show_plot
 
-        self.__fig = plt.figure()
-        self.__ax = self.__fig.add_subplot(111, aspect='equal')
-        self.__ax.set_autoscale_on(False)
-        self.__ax.axis([0, self.__width, 0, self.__height])
+        if self.__show_plot:
+            self.__fig = plt.figure()
+            self.__ax = self.__fig.add_subplot(111, aspect='equal')
+            self.__ax.set_autoscale_on(False)
+            self.__ax.axis([0, self.__width, 0, self.__height])
         # The evolved network
         self.__net = network
 
@@ -36,6 +38,9 @@ class Arena():
         # Coordinate system aligns with axes - bottom left is (0,0).
         self.__fire_grid = [[Cell((j,i)) for i in range(self.__width)] for j in range(self.__height)]
 
+        # For stochasticity
+        random.seed()
+    
         # 'Start' fire at given coordinates
         self.initialise_fire(init_fire_cells)
         self.initialise_agents(num_agents)
@@ -44,8 +49,6 @@ class Arena():
         # Populates dictionary 'self.__wind_spread_modifiers_by_offset', used in Cell.update(...)
         self.calculate_wind_spread_prob_modifiers()
 
-        # For stochasticity
-        random.seed()
     
     def initialise_fire(self, init_fire_cells):
         for x, y in init_fire_cells:
@@ -53,7 +56,6 @@ class Arena():
             self.__on_fire.append((x, y))
 
     def initialise_agents(self, num_agents: int, seed=42):
-        random.seed(seed)
         for i in range(num_agents):
                 position=self.__rectangle.random_point_int(seed)
                 self.__agent_list.append(
@@ -146,6 +148,7 @@ class Arena():
         num_fighters_alive = 0
         squares_on_fire = 0
         burnt_squares=0
+        untouched_squares = 0
         for agent in self.__agent_list:
             if agent.alive:
                 num_fighters_alive = num_fighters_alive+1
@@ -156,20 +159,23 @@ class Arena():
                     burnt_squares=burnt_squares+1
                 elif c.get_state()==CellState.ON_FIRE:
                     squares_on_fire=squares_on_fire+1
+                elif c.get_state()==CellState.BURNABLE:
+                    untouched_squares= untouched_squares+1
 
-        return num_fighters_alive-squares_on_fire-burnt_squares
+        return num_fighters_alive*10+untouched_squares-squares_on_fire-burnt_squares
 
     
     def plot(self):
-        self.__ax.cla()
-        # flip x and y so that they are consistent with the representation
-        y = [a.position().y() for a in self.__agent_list]
-        x = [a.position().x() for a in self.__agent_list]
-        colors = [a.color() for a in self.__agent_list]
-        self.__ax.scatter(y, x, c=colors)
-        self.__ax.axis([0, self.__width , 0, self.__height])
-        self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))
-        plt.pause(0.03)
+        if self.__show_plot:
+            self.__ax.cla()
+            # flip x and y so that they are consistent with the representation
+            y = [a.position().y() for a in self.__agent_list]
+            x = [a.position().x() for a in self.__agent_list]
+            colors = [a.color() for a in self.__agent_list]
+            self.__ax.scatter(y, x, c=colors)
+            self.__ax.axis([0, self.__width , 0, self.__height])
+            self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))
+            plt.pause(0.03)
 
 # Testing
 if __name__ == "__main__":

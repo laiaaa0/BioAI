@@ -1,6 +1,6 @@
 from simulation.geometry import Rectangle, Point
 from simulation.firefighter import Firefighter
-from simulation.cell import Cell
+from simulation.cell import Cell, CellState
 
 import unittest
 import math
@@ -23,7 +23,7 @@ class TestFighter(unittest.TestCase):
 
         for i in range(4, 7):
             for j in range(4, 7):
-                terrain_map[i][j].set_state(1)
+                terrain_map[i][j].set_state(CellState.BURNABLE)
                 terrain_map[i][j].add_one_agent()
 
         f = Firefighter(rect, 0.3, point, 0)
@@ -34,7 +34,7 @@ class TestFighter(unittest.TestCase):
 
         for i in range(2):
             for j in range(2):
-                terrain_map[i][j].set_state(2)
+                terrain_map[i][j].set_state(CellState.ON_FIRE)
                 terrain_map[i][j].add_one_agent()
         expected_list_corner = [0,0, 2,1, 2,1, 0,0, 2,1, 2,1, 0,0, 0,0, 0,0]
         self.assertEqual(

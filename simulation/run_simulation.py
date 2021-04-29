@@ -3,7 +3,7 @@ from simulation.arena import Arena
 import itertools
 import random
 
-testing = True
+testing = False
 
 def run(network=None, num_iterations=100, num_agents=50, show_plot=True):
     # Specifying fire starting locations
@@ -13,7 +13,7 @@ def run(network=None, num_iterations=100, num_agents=50, show_plot=True):
     prevailing_wind_dir = (-1,1)
 
     # TODO Test with the prevailing_wind argument omitted.
-    a = Arena(init_fire, num_agents, network, prevailing_wind_dir)
+    a = Arena(init_fire, num_agents, network, show_plot, prevailing_wind_dir)
 
     # Set up trench
     if testing:
