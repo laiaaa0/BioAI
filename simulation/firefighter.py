@@ -75,12 +75,12 @@ class Firefighter(agent.Agent):
         inputs = []
         for [posx,posy] in positions:
             if self._arena_rect.contains(Point(posx,posy)):
-                inputs.append(int(pattern[posx][posy].get_state()))
-                inputs.append(int(pattern[posx][posy].get_num_agents()))                
+                inputs.append(pattern[posx][posy].get_state().value)
+                inputs.append(pattern[posx][posy].get_num_agents()) 
             else:
                 inputs.append(0)
                 inputs.append(0)
-
+                
         return inputs
 
     def update(self, fire_grid, net):
@@ -88,7 +88,12 @@ class Firefighter(agent.Agent):
             if net:
                 inputs = self.get_network_input(fire_grid)
                 (action,direction) = net.activate(inputs)
-                self.do_action(direction,action,fire_grid)
+                # action and direction are returned as floats
+                action_bounded = max(min(action,5),1)
+                direction_bounded = max(min(action,5),1)
+                action_enum = Action(int(action_bounded))
+                direction_enum = Direction(int(direction_bounded))
+                self.do_action(direction_enum,action_enum,fire_grid)
             else:
                 random_dir = Direction(random.randint(1,5))
                 random_act = Action(random.randint(1,5))
