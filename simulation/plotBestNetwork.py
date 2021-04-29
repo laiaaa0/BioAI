@@ -30,18 +30,18 @@ num_inputs = 18
 num_outputs=2
 for i in range(1,num_inputs+1):
     node_names[i*-1] = f"input {i}"
-node_names[0]="action"
-node_names[1]="direction"
+for i in range(num_outputs):
+    node_names[i] = f"output {i}"
 
 
 visualize.draw_net(config, c, True, node_names=node_names)
 
-visualize.draw_net(config, c, view=True, node_names=node_names,
-                   filename="winner-feedforward.gv")
-visualize.draw_net(config, c, view=True, node_names=node_names,
-                      filename="winner-feedforward-enabled.gv", show_disabled=False)
-visualize.draw_net(config, c, view=True, node_names=node_names,
-                     filename="winner-feedforward-enabled-pruned.gv", show_disabled=False, prune_unused=True)
+#visualize.draw_net(config, c, view=True, node_names=node_names,
+#                   filename="winner-feedforward.gv")
+#visualize.draw_net(config, c, view=True, node_names=node_names,
+#                      filename="winner-feedforward-enabled.gv", show_disabled=False)
+#visualize.draw_net(config, c, view=True, node_names=node_names,
+#                     filename="winner-feedforward-enabled-pruned.gv", show_disabled=False, prune_unused=True)
 
 
 run(net, 100, 50, True)

@@ -87,12 +87,17 @@ class Firefighter(agent.Agent):
         if self.alive:
             if net:
                 inputs = self.get_network_input(fire_grid)
-                (action,direction) = net.activate(inputs)
+                outputs = net.activate(inputs)
+                direction_values = outputs[:5]
+                action_values = outputs[5:]
+                max_index_direction = direction_values.index(max(direction_values))+1
+                max_index_action = action_values.index(max(action_values))+1
+
                 # action and direction are returned as floats
-                action_bounded = max(min(action,5),1)
-                direction_bounded = max(min(action,5),1)
-                action_enum = Action(int(action_bounded))
-                direction_enum = Direction(int(direction_bounded))
+                #action_bounded = max(min(action,5),1)
+                #direction_bounded = max(min(action,5),1)
+                action_enum = Action(int(max_index_action))
+                direction_enum = Direction(int(max_index_direction))
                 self.do_action(direction_enum,action_enum,fire_grid)
             else:
                 random_dir = Direction(random.randint(1,5))

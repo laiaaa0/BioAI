@@ -129,7 +129,7 @@ class Arena():
                 elif c.get_state()==CellState.ON_FIRE:
                     squares_on_fire=squares_on_fire+1
 
-        return num_fighters_alive-squares_on_fire-burnt_squares
+        return num_fighters_alive*10-squares_on_fire-burnt_squares
 
     
     def plot(self):
