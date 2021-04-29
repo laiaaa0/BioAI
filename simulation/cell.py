@@ -1,9 +1,12 @@
 import enum
 import random
+import numpy as np
+import math
 
 # Globals
 CELL_BURN_RATE = 10
-FIRE_TRANSMISSION_PROBABILITY = 0.3
+FIRE_TRANSMISSION_PROBABILITY = 0.5
+RANDOM_WEIGHTING = 0.75
 
 # Colours:
 # ON_FIRE = yellow = (255, 255, 0)
@@ -28,7 +31,7 @@ class Cell():
     
     # fire_grid is the 2D list containing the Cells.
     # world_dims = (width, height)
-    def update(self, fire_list_current, fire_list_next, fire_grid, world_dims):
+    def update(self, fire_list_current, fire_list_next, fire_grid, world_dims, wind_np):
         if not self.burn():     # Burning reduces remaining fuel.
             # If cell burnt out, remove from list.
             # TODO Improvement: don't like modifying this from inside this function.
@@ -36,11 +39,23 @@ class Cell():
             fire_list_next.append(self.__coords)
         
         # We already know that the cell is on fire.
-        for neighbour_coord in self.get_neighbours(world_dims):
+        for neighbour_coord, offset in self.get_neighbours(world_dims):
+            ##print("Neighbour coord: {}, offset: {}".format(neighbour_coord, offset))
             neighbour = fire_grid[neighbour_coord[0]][neighbour_coord[1]]
             if neighbour.get_state() == CellState.BURNABLE:
                 # Stochasticity
-                if (random.random() >= (1 - FIRE_TRANSMISSION_PROBABILITY)):
+                # Alter transmission probability depending on direction of wind
+                offset_np = np.array(offset)
+                ##print("Offset: {}, wind: {}".format(offset_np, wind_np))
+                # > 0 ==> wind in same direction; < 0 ==> wind in opposite direction.
+                wind_modifier = np.dot(offset_np, wind_np)
+                #print("Wind modifier: {}".format(wind_modifier))
+
+                # Hyperbolic tangent / 2 has a range of -0.5 to 0.5.
+                # (math.tanh(wind_modifier) / 2)
+                # if (random.random() * (0.5 + wind_modifier / 2) >= (1 - FIRE_TRANSMISSION_PROBABILITY)):
+                # (random.random() + math.tanh(wind_modifier))
+                if (RANDOM_WEIGHTING * random.random() + (1 - RANDOM_WEIGHTING) * math.tanh(wind_modifier) >= (1 - FIRE_TRANSMISSION_PROBABILITY)):
                     # TODO Improvement: don't like modifying these from inside this function.
                     # These should perhaps be passed back and taken care of by the calling code.
                     neighbour.set_state(CellState.ON_FIRE)
@@ -53,7 +68,7 @@ class Cell():
         for (i,j) in [(-1,0), (1,0), (0,-1), (0,1)]:
             (neighbour_x, neighbour_y) = (self.__coords[0] + i, self.__coords[1] + j)
             if (0 <= neighbour_x < world_dims[0]) and (0 <= neighbour_y < world_dims[1]):
-                neighbours.append((neighbour_x, neighbour_y))
+                neighbours.append(((neighbour_x, neighbour_y), (i, j)))
         
         return neighbours
     

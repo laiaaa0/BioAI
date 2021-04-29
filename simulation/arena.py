@@ -14,13 +14,18 @@ import itertools
 
 class Arena():
     # init_fire is an array of 2-tuples specifying the initial cells which are on fire: [(x1,y1), (x2,y2)].
-    def __init__(self, init_fire_cells, num_agents=5, network=None):
+    def __init__(self, init_fire_cells, num_agents=5, network=None, wind=(0,0)):
         self.__width = 100  # m (1 km)
         self.__height = 100  # m (1 km) - each pixel is 1 m2
         self.__rectangle = Rectangle(0,0, self.__width, self.__height)
         # Keeps track of the cells on fire, so that it doesn't have to check all of the cells in the grid on every iteration.
         # List of cell coordinates.
         self.__on_fire = []
+        # Normalised numpy vector
+        # TODO Temp - coordinates are backwards in current coordinate system - have to swap elements.
+        wind_np = np.array([wind[1], wind[0]])
+        self.__wind = wind_np / np.linalg.norm(wind_np)
+
         self.__agent_list = []
 
         self.__fig = plt.figure()
@@ -102,14 +107,15 @@ class Arena():
 
     def update(self):
 
+        # Update agents
         # Gets populated during the iteration
         for agent in self.__agent_list:
             agent.update(self.__fire_grid, self.__net)
 
+        # Update fire
         on_fire_next_itr = []
         for x, y in self.__on_fire:
-            self.__fire_grid[x][y].update(self.__on_fire, on_fire_next_itr, self.__fire_grid, (self.__width, self.__height))
-        
+            self.__fire_grid[x][y].update(self.__on_fire, on_fire_next_itr, self.__fire_grid, (self.__width, self.__height), self.__wind)
         self.__on_fire = on_fire_next_itr
 
     def get_fitness_function(self):
