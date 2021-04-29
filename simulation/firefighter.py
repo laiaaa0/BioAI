@@ -70,7 +70,7 @@ class Firefighter(agent.Agent):
                 pass
 
     def get_network_input(self, pattern):
-        directions = np.array([[-1,1],[0,1],[1,1],[-1,0],[0,0],[1,0],[-1,-1],[0,-1],[1,-1]], dtype=np.int8)
+        directions = np.array([[-1,1],[0,1],[1,1],[-1,0],[0,0],[1,0],[-1,-1],[0,-1],[1,-1], [-4,0],[4,0],[0,4],[0,-4]], dtype=np.int8)
         positions = [int(self._current_position.x()), int(self._current_position.y())]+directions
         inputs = []
         for [posx,posy] in positions:

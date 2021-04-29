@@ -38,12 +38,13 @@ class Arena():
         # Coordinate system aligns with axes - bottom left is (0,0).
         self.__fire_grid = [[Cell((j,i)) for i in range(self.__width)] for j in range(self.__height)]
 
-        # For stochasticity
-        random.seed()
     
         # 'Start' fire at given coordinates
         self.initialise_fire(init_fire_cells)
         self.initialise_agents(num_agents)
+        # For stochasticity
+        random.seed()
+
         
         # Calculate effect of wind on spread of fire.
         # Populates dictionary 'self.__wind_spread_modifiers_by_offset', used in Cell.update(...)
@@ -56,6 +57,7 @@ class Arena():
             self.__on_fire.append((x, y))
 
     def initialise_agents(self, num_agents: int, seed=42):
+        random.seed(seed)
         for i in range(num_agents):
                 position=self.__rectangle.random_point_int(seed)
                 self.__agent_list.append(
@@ -162,7 +164,7 @@ class Arena():
                 elif c.get_state()==CellState.BURNABLE:
                     untouched_squares= untouched_squares+1
 
-        return num_fighters_alive*10+untouched_squares-squares_on_fire-burnt_squares
+        return num_fighters_alive*5+untouched_squares-squares_on_fire-burnt_squares
 
     
     def plot(self):

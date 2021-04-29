@@ -26,8 +26,8 @@ net = neat.nn.FeedForwardNetwork.create(c, config)
 
 #node_names = {-1: 'x', -2: 'dx', -3: 'theta', -4: 'dtheta', 0: 'control'}
 node_names={}
-num_inputs = 18
-num_outputs=2
+num_inputs = 26
+num_outputs=10
 for i in range(1,num_inputs+1):
     node_names[i*-1] = f"input {i}"
 for i in range(num_outputs):

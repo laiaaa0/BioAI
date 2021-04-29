@@ -17,7 +17,7 @@ class TestFighter(unittest.TestCase):
         rect = Rectangle(0, 0, 10, 10)
         point = Point(5, 5)
         terrain_map = [[Cell((j,i)) for i in range(10)] for j in range(10)]
-        expected_input_list = [1] * 18
+        expected_input_list = [1] * 18 + [ 1, 0, 1, 0, 1, 0,1,0]
         
 
 
@@ -36,7 +36,7 @@ class TestFighter(unittest.TestCase):
             for j in range(2):
                 terrain_map[i][j].set_state(CellState.ON_FIRE)
                 terrain_map[i][j].add_one_agent()
-        expected_list_corner = [0,0, 2,1, 2,1, 0,0, 2,1, 2,1, 0,0, 0,0, 0,0]
+        expected_list_corner = [0,0, 2,1, 2,1, 0,0, 2,1, 2,1, 0,0, 0,0, 0,0,0,0,1,0,1,0,0,0]
         self.assertEqual(
             f.get_network_input(terrain_map),
             expected_list_corner)
