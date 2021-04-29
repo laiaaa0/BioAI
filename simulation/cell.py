@@ -1,9 +1,14 @@
 import enum
 import random
+import numpy as np
+import math
 
 # Globals
 CELL_BURN_RATE = 10
-FIRE_TRANSMISSION_PROBABILITY = 0.3
+FIRE_TRANSMISSION_PROBABILITY = 0.5
+RANDOM_WEIGHTING = 0.75
+
+neighbourhood = [(-1,0), (1,0), (0,-1), (0,1)] #, (-1,-1), (1,1), (-1,1), (1,-1)]
 
 # Colours:
 # ON_FIRE = yellow = (255, 255, 0)
@@ -28,7 +33,11 @@ class Cell():
     
     # fire_grid is the 2D list containing the Cells.
     # world_dims = (width, height)
-    def update(self, fire_list_current, fire_list_next, fire_grid, world_dims):
+    # offset_spread_modifiers = dictionary of (x,y) spread rate modifiers for spread probability, indexed by the offsets
+    #    in the list returned by self.get_neighbours(). Passing in this dictionary allows these (x,y) spread rate modifiers to be
+    #    pre-computed (since they only depend on the wind vector and offsets in use, not on the actual
+    #    cells themselves), reducing computation time.
+    def update(self, fire_list_current, fire_list_next, fire_grid, world_dims, offset_spread_modifiers):
         if not self.burn():     # Burning reduces remaining fuel.
             # If cell burnt out, remove from list.
             # TODO Improvement: don't like modifying this from inside this function.
@@ -36,11 +45,11 @@ class Cell():
             fire_list_next.append(self.__coords)
         
         # We already know that the cell is on fire.
-        for neighbour_coord in self.get_neighbours(world_dims):
+        for neighbour_coord, offset in self.get_neighbours(world_dims):
             neighbour = fire_grid[neighbour_coord[0]][neighbour_coord[1]]
             if neighbour.get_state() == CellState.BURNABLE:
                 # Stochasticity
-                if (random.random() >= (1 - FIRE_TRANSMISSION_PROBABILITY)):
+                if (RANDOM_WEIGHTING * random.random() + (1 - RANDOM_WEIGHTING) * offset_spread_modifiers[offset] >= (1 - FIRE_TRANSMISSION_PROBABILITY)):
                     # TODO Improvement: don't like modifying these from inside this function.
                     # These should perhaps be passed back and taken care of by the calling code.
                     neighbour.set_state(CellState.ON_FIRE)
@@ -50,10 +59,10 @@ class Cell():
         neighbours = []
         
         # Manhattan distance of 1.
-        for (i,j) in [(-1,0), (1,0), (0,-1), (0,1)]:
+        for (i,j) in neighbourhood:
             (neighbour_x, neighbour_y) = (self.__coords[0] + i, self.__coords[1] + j)
             if (0 <= neighbour_x < world_dims[0]) and (0 <= neighbour_y < world_dims[1]):
-                neighbours.append((neighbour_x, neighbour_y))
+                neighbours.append(((neighbour_x, neighbour_y), (i, j)))
         
         return neighbours
     
