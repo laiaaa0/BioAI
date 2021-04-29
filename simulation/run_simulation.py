@@ -9,7 +9,7 @@ def run(network=None, num_iterations=100, num_agents=50, show_plot=True):
     # Specifying fire starting locations
     init_fire = [(0,0), (20,20), (50,50), (50,51)]
 
-    a = Arena(init_fire, num_agents, network)
+    a = Arena(init_fire, num_agents, network, show_plot)
 
     # Set up trench
     if testing:

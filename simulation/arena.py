@@ -14,7 +14,7 @@ import itertools
 
 class Arena():
     # init_fire is an array of 2-tuples specifying the initial cells which are on fire: [(x1,y1), (x2,y2)].
-    def __init__(self, init_fire_cells, num_agents=5, network=None):
+    def __init__(self, init_fire_cells, num_agents=5, network=None, show_plot=False):
         self.__width = 100  # m (1 km)
         self.__height = 100  # m (1 km) - each pixel is 1 m2
         self.__rectangle = Rectangle(0,0, self.__width, self.__height)
@@ -22,11 +22,13 @@ class Arena():
         # List of cell coordinates.
         self.__on_fire = []
         self.__agent_list = []
+        self.__show_plot = show_plot
 
-        self.__fig = plt.figure()
-        self.__ax = self.__fig.add_subplot(111, aspect='equal')
-        self.__ax.set_autoscale_on(False)
-        self.__ax.axis([0, self.__width, 0, self.__height])
+        if self.__show_plot:
+            self.__fig = plt.figure()
+            self.__ax = self.__fig.add_subplot(111, aspect='equal')
+            self.__ax.set_autoscale_on(False)
+            self.__ax.axis([0, self.__width, 0, self.__height])
         # The evolved network
         self.__net = network
 
@@ -131,15 +133,16 @@ class Arena():
 
     
     def plot(self):
-        self.__ax.cla()
-        # flip x and y so that they are consistent with the representation
-        y = [a.position().y() for a in self.__agent_list]
-        x = [a.position().x() for a in self.__agent_list]
-        colors = [a.color() for a in self.__agent_list]
-        self.__ax.scatter(y, x, c=colors)
-        self.__ax.axis([0, self.__width , 0, self.__height])
-        self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))
-        plt.pause(0.03)
+        if self.__show_plot:
+            self.__ax.cla()
+            # flip x and y so that they are consistent with the representation
+            y = [a.position().y() for a in self.__agent_list]
+            x = [a.position().x() for a in self.__agent_list]
+            colors = [a.color() for a in self.__agent_list]
+            self.__ax.scatter(y, x, c=colors)
+            self.__ax.axis([0, self.__width , 0, self.__height])
+            self.__ax.imshow(self.image_from_pattern(), extent=(self.__ax.axis()))
+            plt.pause(0.03)
 
 # Testing
 if __name__ == "__main__":
