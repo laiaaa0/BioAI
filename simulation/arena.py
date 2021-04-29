@@ -36,12 +36,13 @@ class Arena():
         # Coordinate system aligns with axes - bottom left is (0,0).
         self.__fire_grid = [[Cell((j,i)) for i in range(self.__width)] for j in range(self.__height)]
 
+        # For stochasticity
+        random.seed()
+    
         # 'Start' fire at given coordinates
         self.initialise_fire(init_fire_cells)
         self.initialise_agents(num_agents)
 
-        # For stochasticity
-        random.seed()
     
     def initialise_fire(self, init_fire_cells):
         for x, y in init_fire_cells:
@@ -49,7 +50,6 @@ class Arena():
             self.__on_fire.append((x, y))
 
     def initialise_agents(self, num_agents: int, seed=42):
-        random.seed(seed)
         for i in range(num_agents):
                 position=self.__rectangle.random_point_int(seed)
                 self.__agent_list.append(
@@ -118,6 +118,7 @@ class Arena():
         num_fighters_alive = 0
         squares_on_fire = 0
         burnt_squares=0
+        untouched_squares = 0
         for agent in self.__agent_list:
             if agent.alive:
                 num_fighters_alive = num_fighters_alive+1
@@ -128,8 +129,10 @@ class Arena():
                     burnt_squares=burnt_squares+1
                 elif c.get_state()==CellState.ON_FIRE:
                     squares_on_fire=squares_on_fire+1
+                elif c.get_state()==CellState.BURNABLE:
+                    untouched_squares= untouched_squares+1
 
-        return num_fighters_alive*10-squares_on_fire-burnt_squares
+        return num_fighters_alive*10+untouched_squares-squares_on_fire-burnt_squares
 
     
     def plot(self):

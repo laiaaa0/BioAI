@@ -46,13 +46,13 @@ weight_min_value        = -30
 weight_init_mean        = 0.0
 weight_init_stdev       = 1.0
 weight_mutate_rate      = 0.8
-weight_replace_rate     = 0.1
+weight_replace_rate     = 0.2
 weight_mutate_power     = 0.5
 enabled_default         = True
 enabled_mutate_rate     = 0.01
 
 [DefaultSpeciesSet]
-compatibility_threshold = 3.0
+compatibility_threshold = 1.5
 
 [DefaultStagnation]
 species_fitness_func = max

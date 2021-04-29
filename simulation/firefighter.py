@@ -93,16 +93,12 @@ class Firefighter(agent.Agent):
                 max_index_direction = direction_values.index(max(direction_values))+1
                 max_index_action = action_values.index(max(action_values))+1
 
-                # action and direction are returned as floats
-                #action_bounded = max(min(action,5),1)
-                #direction_bounded = max(min(action,5),1)
                 action_enum = Action(int(max_index_action))
                 direction_enum = Direction(int(max_index_direction))
                 self.do_action(direction_enum,action_enum,fire_grid)
             else:
                 random_dir = Direction(random.randint(1,5))
                 random_act = Action(random.randint(1,5))
-                #self.do_action(random_dir,random_act, fire_grid)
                 self.do_action(Direction.NORTH,Action.MOVE,fire_grid)
         if fire_grid[self._current_position.x()][self._current_position.y()].get_state() == CellState.ON_FIRE:
             if self.alive:

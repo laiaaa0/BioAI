@@ -44,4 +44,4 @@ visualize.draw_net(config, c, True, node_names=node_names)
 #                     filename="winner-feedforward-enabled-pruned.gv", show_disabled=False, prune_unused=True)
 
 
-run(net, 100, 50, True)
+run(net, 100, 200, True)
