@@ -3,8 +3,9 @@ from simulation.run_simulation import run
 import os
 import neat
 from simulation import visualize
+from simulation.network import time_const
 
-with open('winner-feedforward', 'rb') as f:
+with open('winner-ctrnn', 'rb') as f:
 	c = pickle.load(f)
 
 print('Loaded genome:')
@@ -18,7 +19,7 @@ config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation,
                      config_path)
 
-net = neat.nn.FeedForwardNetwork.create(c, config)
+net = neat.ctrnn.CTRNN.create(c, config, time_const)# neat.nn.FeedForwardNetwork.create(c, config)
 
 
 #visualize.plot_stats(stats, ylog=True, view=True, filename="feedforward-fitness.svg")
@@ -44,4 +45,4 @@ visualize.draw_net(config, c, True, node_names=node_names)
 #                     filename="winner-feedforward-enabled-pruned.gv", show_disabled=False, prune_unused=True)
 
 
-run(net, 100, 200, True)
+run(net, 200, 30, True)

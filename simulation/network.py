@@ -12,14 +12,16 @@ import pickle
 import neat
 
 from simulation import run_simulation
+import simulation.firefighter
 
 
 
 runs_per_net = 1
+time_const = 0.01
 
 # Use the NN network phenotype and the discrete actuator force function.
 def eval_genome(genome, config):
-    net = neat.nn.FeedForwardNetwork.create(genome, config)
+    net = neat.ctrnn.CTRNN.create(genome, config, time_const)
 
     fitnesses = []
 
@@ -28,7 +30,7 @@ def eval_genome(genome, config):
 
         # Run the given simulation for up to num_steps time steps.
         fitness = 0.0
-        fitness = run_simulation.run(net, 100, 100, False)
+        fitness = run_simulation.run(net, 200, 30, False)
 
         fitnesses.append(fitness)
 
@@ -56,10 +58,10 @@ def run():
     pop.add_reporter(neat.StdOutReporter(True))
 
     pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
-    winner = pop.run(pe.evaluate, n = 100)
+    winner = pop.run(pe.evaluate, n = 500)
 
     # Save the winner.
-    with open('winner-feedforward', 'wb') as f:
+    with open('winner-ctrnn', 'wb') as f:
         pickle.dump(winner, f)
 
     print(winner)

@@ -10,7 +10,7 @@ def run(network=None, num_iterations=100, num_agents=50, show_plot=True):
     init_fire = [(0,0), (20,20), (50,50), (50,51)]
     # Specifying prevailing wind: 2-tuple, (x, y). Will be normalised to a unit vector
     # (i.e only have control of direction, not speed).
-    prevailing_wind_dir = (-1,1)
+    prevailing_wind_dir = (1,0)
 
     # TODO Test with the prevailing_wind argument omitted.
     a = Arena(init_fire, num_agents, network, show_plot, prevailing_wind_dir)

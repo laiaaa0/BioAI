@@ -4,6 +4,7 @@ from simulation.cell import Cell, CellState
 import enum 
 import numpy as np
 import random
+from simulation.network import time_const
 
 class Action(enum.Enum):
     EXTINGUISH=1
@@ -87,7 +88,7 @@ class Firefighter(agent.Agent):
         if self.alive:
             if net:
                 inputs = self.get_network_input(fire_grid)
-                outputs = net.activate(inputs)
+                outputs = net.advance(inputs, time_const, time_const)
                 direction_values = outputs[:5]
                 action_values = outputs[5:]
                 max_index_direction = direction_values.index(max(direction_values))+1
