@@ -3,7 +3,7 @@ from simulation.arena import Arena
 import itertools
 import random
 
-testing = True
+testing = False
 
 def run(network=None, num_iterations=100, num_agents=50, show_plot=True):
     # Specifying fire starting locations
