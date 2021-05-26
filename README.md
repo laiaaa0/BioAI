@@ -37,11 +37,7 @@ python -m  simulation.plotBestNetwork
 ### Results
 
 Here is how the fire spreads using the cellular automata
-![Fire spread](FireSpread)
+![Fire spread](media/firespread.gif)
 
 Here is a trained network of the fire fighters building trenches to surpress the fire
-![Evolved Behaviour](Evolved)
-[FireSpread]: media/firespread.gif
-[Evolved]: media/network.gif
-
-
+![Evolved Behaviour](media/network.gif)
