@@ -5,12 +5,13 @@ import random
 
 testing = False
 
+
 def run(network=None, num_iterations=100, num_agents=50, show_plot=True):
     # Specifying fire starting locations
-    init_fire = [(0,0), (20,20), (50,50), (50,51)]
+    init_fire = [(0, 0), (20, 20), (50, 50), (50, 51)]
     # Specifying prevailing wind: 2-tuple, (x, y). Will be normalised to a unit vector
     # (i.e only have control of direction, not speed).
-    prevailing_wind_dir = (-1,1)
+    prevailing_wind_dir = (-1, 1)
 
     # TODO Test with the prevailing_wind argument omitted.
     a = Arena(init_fire, num_agents, network, show_plot, prevailing_wind_dir)
@@ -28,7 +29,10 @@ def run(network=None, num_iterations=100, num_agents=50, show_plot=True):
         if testing:
             extinguish_coords = []
             for i in range(100):
-                extinguish_coords.append((random.randint(0,99), random.randint(0,99)))
+                extinguish_coords.append(
+                    (random.randint(
+                        0, 99), random.randint(
+                        0, 99)))
             a.extinguish(extinguish_coords)
 
     if show_plot:
@@ -36,7 +40,8 @@ def run(network=None, num_iterations=100, num_agents=50, show_plot=True):
         plt.show()
     return a.get_fitness_function()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     #print(run(None, 100, 50, True))
     # Testing default parameters
     print(run())

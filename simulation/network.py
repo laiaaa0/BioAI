@@ -14,10 +14,11 @@ import neat
 from simulation import run_simulation
 
 
-
 runs_per_net = 1
 
 # Use the NN network phenotype and the discrete actuator force function.
+
+
 def eval_genome(genome, config):
     net = neat.nn.FeedForwardNetwork.create(genome, config)
 
@@ -56,15 +57,13 @@ def run():
     pop.add_reporter(neat.StdOutReporter(True))
 
     pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
-    winner = pop.run(pe.evaluate, n = 100)
+    winner = pop.run(pe.evaluate, n=100)
 
     # Save the winner.
     with open('winner-feedforward', 'wb') as f:
         pickle.dump(winner, f)
 
     print(winner)
-
-
 
 
 if __name__ == '__main__':

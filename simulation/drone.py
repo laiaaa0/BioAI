@@ -6,7 +6,6 @@ import numpy as np
 import sys
 
 
-
 class Drone(agent.Agent):
     def __init__(
             self,
@@ -17,10 +16,10 @@ class Drone(agent.Agent):
 
         speed = 45  # km/h
         speed = speed * 3600 / 1000  # m/s
-        max_capacity = 150 # liters
+        max_capacity = 150  # liters
         super().__init__(arena, speed, theta, pos, True, max_capacity, encoding)
         self._current_liters = self._max_capacity
-        
+
         self.__state = None
 
     def color(self):
@@ -29,24 +28,23 @@ class Drone(agent.Agent):
     def should_drop_water(self, fire_pattern):
         # This is modified by the encoding
         if self.count_positions_on_fire(fire_pattern) > int(self._encoding):
-            return True 
+            return True
         else:
             return False
 
-    def count_positions_on_fire(self,fire_pattern):
+    def count_positions_on_fire(self, fire_pattern):
         (index_x, index_y) = super().index_in_grid(super().position())
-        x_start = max(0, index_x-1)
-        x_end = min(fire_pattern.shape[0]-1, index_x+1)
-        y_start = max(0, index_y-1)
-        y_end = min(fire_pattern.shape[0]-1, index_y+1)
-        
-        positions_on_fire = np.sum(fire_pattern[x_start:x_end,y_start:y_end])
+        x_start = max(0, index_x - 1)
+        x_end = min(fire_pattern.shape[0] - 1, index_x + 1)
+        y_start = max(0, index_y - 1)
+        y_end = min(fire_pattern.shape[0] - 1, index_y + 1)
+
+        positions_on_fire = np.sum(fire_pattern[x_start:x_end, y_start:y_end])
         return positions_on_fire
-        
 
     def agent_type(self):
         return agent.Type.DRONE
-    
+
     def update_direction(self, fire_pattern):
         (index_x, index_y) = super().index_in_grid(super().position())
         # Assume that the temperature sensor would detect high temperature up

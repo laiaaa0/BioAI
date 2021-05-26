@@ -1,11 +1,11 @@
-import pickle 
-from simulation.run_simulation import run 
+import pickle
+from simulation.run_simulation import run
 import os
 import neat
 from simulation import visualize
 
 with open('winner-feedforward', 'rb') as f:
-	c = pickle.load(f)
+    c = pickle.load(f)
 
 print('Loaded genome:')
 print(c)
@@ -25,23 +25,24 @@ net = neat.nn.FeedForwardNetwork.create(c, config)
 #visualize.plot_species(stats, view=True, filename="feedforward-speciation.svg")
 
 #node_names = {-1: 'x', -2: 'dx', -3: 'theta', -4: 'dtheta', 0: 'control'}
-node_names={}
+node_names = {}
 num_inputs = 26
-num_outputs=10
-for i in range(1,num_inputs+1):
-    node_names[i*-1] = f"input {i}"
+num_outputs = 10
+for i in range(1, num_inputs + 1):
+    node_names[i * -1] = f"input {i}"
 for i in range(num_outputs):
     node_names[i] = f"output {i}"
 
 
 visualize.draw_net(config, c, True, node_names=node_names)
 
-#visualize.draw_net(config, c, view=True, node_names=node_names,
+# visualize.draw_net(config, c, view=True, node_names=node_names,
 #                   filename="winner-feedforward.gv")
-#visualize.draw_net(config, c, view=True, node_names=node_names,
+# visualize.draw_net(config, c, view=True, node_names=node_names,
 #                      filename="winner-feedforward-enabled.gv", show_disabled=False)
-#visualize.draw_net(config, c, view=True, node_names=node_names,
-#                     filename="winner-feedforward-enabled-pruned.gv", show_disabled=False, prune_unused=True)
+# visualize.draw_net(config, c, view=True, node_names=node_names,
+# filename="winner-feedforward-enabled-pruned.gv", show_disabled=False,
+# prune_unused=True)
 
 
 run(net, 100, 200, True)

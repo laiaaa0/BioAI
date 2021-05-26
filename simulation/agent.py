@@ -9,11 +9,13 @@ class State(enum.Enum):
     GOING_TO_FIRE = 2
     ON_FIRE = 3
 
+
 class Type(enum.Enum):
     AGENT = 1
     DRONE = 2
     TRUCK = 3
     FIGHTER = 4
+
 
 class Agent():
     def __init__(
@@ -23,7 +25,7 @@ class Agent():
             theta: float,
             pos: Point,
             can_be_on_fire: bool,
-            max_capacity : int,
+            max_capacity: int,
             encoding: int):
         self._base_speed = speed
         self._current_speed = speed
@@ -34,9 +36,8 @@ class Agent():
         self._encoding = encoding
         self._max_capacity = max_capacity
         self.__water_tank_location = Point(400, 400)
-        self._drop_rate = 17# Liters/m^2 (https://bedtimemath.org/fun-math-firefighting/)
-        
-
+        # Liters/m^2 (https://bedtimemath.org/fun-math-firefighting/)
+        self._drop_rate = 17
 
     def position(self):
         return self._current_position
@@ -47,6 +48,7 @@ class Agent():
 
     def agent_type(self):
         return Type.AGENT
+
     def color(self):
         return [0, 0, 0]
 
@@ -71,7 +73,6 @@ class Agent():
             self._direction_theta = math.atan2(
                 direction.y(), direction.x())
             self._current_speed = min(self._base_speed, direction.norm())
-
 
     def is_position_on_fire(self, pattern, pos):
         (index_x, index_y) = self.index_in_grid(pos)
